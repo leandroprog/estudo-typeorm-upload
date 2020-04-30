@@ -9,7 +9,7 @@ import AppError from './errors/AppError';
 
 import createConnection from './database';
 
-createConnection('postgres');
+createConnection();
 const app = express();
 
 app.use(express.json());
