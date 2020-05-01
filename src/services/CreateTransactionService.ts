@@ -1,6 +1,6 @@
-// import AppError from '../errors/AppError';
-
 import { getCustomRepository, getRepository } from 'typeorm';
+import AppError from '../errors/AppError';
+
 import Transaction from '../models/Transaction';
 import TransactionRepository from '../repositories/TransactionsRepository';
 import Category from '../models/Category';
@@ -31,12 +31,17 @@ class CreateTransactionService {
 
     category_id = categoryExist?.id;
 
-    // console.log(await categoryRepository.find());
     if (!categoryExist) {
       const newCategory = categoryRepository.create({ title: category });
       await categoryRepository.save(newCategory);
       category_id = newCategory.id;
       console.log(newCategory);
+    }
+
+    const balance = await transationRepository.getBalance();
+
+    if (type === 'outcome' && value > balance.income) {
+      throw new AppError('Sem dinheiro', 400);
     }
 
     const transaction = transationRepository.create({

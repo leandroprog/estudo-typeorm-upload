@@ -19,8 +19,6 @@ class TransactionsRepository extends Repository<Transaction> {
       .groupBy('transactions.type')
       .getRawMany();
 
-    console.log(resultTransaction);
-
     const result = resultTransaction.reduce(
       (acc, item) => {
         acc[item.type] = Number(item.sum) || 0;
@@ -32,7 +30,6 @@ class TransactionsRepository extends Repository<Transaction> {
       },
       { total: 0 },
     );
-    console.log(result);
 
     return result;
   }
