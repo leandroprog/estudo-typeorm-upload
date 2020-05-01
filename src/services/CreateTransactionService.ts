@@ -21,26 +21,28 @@ class CreateTransactionService {
   }: RequestDTO): Promise<Transaction> {
     const transationRepository = getCustomRepository(TransactionRepository);
     const categoryRepository = getRepository(Category);
-    let category_id;
+    // let category_id;
 
-    const categoryExist = await categoryRepository.findOne({
+    let transactionCategory = await categoryRepository.findOne({
       where: {
         title: category,
       },
     });
 
-    category_id = categoryExist?.id;
+    // category_id = categoryExist?.id;
 
-    if (!categoryExist) {
-      const newCategory = categoryRepository.create({ title: category });
-      await categoryRepository.save(newCategory);
-      category_id = newCategory.id;
-      console.log(newCategory);
+    if (!transactionCategory) {
+      transactionCategory = categoryRepository.create({
+        title: category,
+      });
+      await categoryRepository.save(transactionCategory);
+      // category_id = newCategory.id;
+      // console.log(newCategory);
     }
 
     const balance = await transationRepository.getBalance();
 
-    if (type === 'outcome' && value > balance.income) {
+    if (type === 'outcome' && value > balance.total) {
       throw new AppError('Sem dinheiro', 400);
     }
 
@@ -48,7 +50,7 @@ class CreateTransactionService {
       title,
       value,
       type,
-      category_id,
+      category: transactionCategory,
     });
 
     await transationRepository.save(transaction);
