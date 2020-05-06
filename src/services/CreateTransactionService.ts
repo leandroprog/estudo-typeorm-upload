@@ -36,8 +36,7 @@ class CreateTransactionService {
         title: category,
       });
       await categoryRepository.save(transactionCategory);
-      // category_id = newCategory.id;
-      // console.log(newCategory);
+      console.log(transactionCategory);
     }
 
     const balance = await transationRepository.getBalance();
